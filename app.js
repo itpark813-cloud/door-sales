@@ -513,4 +513,44 @@ loginForm.addEventListener('submit', (e) => {
         });
 });
 
-onAuthStateChanged(auth, (user
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        loginBtn.style.display = 'none';
+        
+        // Значения по дефолту до кастомизации
+        const defaultName = user.displayName || user.email.split('@')[0];
+        userName.innerText = defaultName;
+        avatarName.innerText = defaultName.charAt(0).toUpperCase();
+        cabinetAvatarFallback.innerText = defaultName.charAt(0).toUpperCase();
+        nicknameInput.value = defaultName;
+        
+        userProfile.style.display = 'flex';
+        profilePrompt.style.display = 'none';
+        profileSection.style.display = 'block';
+        userEmailText.innerText = user.email;
+        
+        const creationTime = user.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString('ru-RU') : 'Сегодня';
+        userJoinedDate.innerText = creationTime;
+
+        // Загружаем сохраненный кастомный профиль (если есть)
+        loadCustomProfile(user.uid);
+        renderOrdersUI(user);
+    } else {
+        userProfile.style.display = 'none';
+        loginBtn.style.display = 'flex';
+        profileSection.style.display = 'none';
+        profilePrompt.style.display = 'block';
+        renderGuestOrdersUI();
+    }
+});
+
+logoutBtn.addEventListener('click', () => {
+    signOut(auth).then(() => {
+        loginForm.reset();
+        alert("Вы вышли из аккаунта.");
+    });
+});
+
+// Стартовый запуск
+renderCatalog();
+applyLanguage();
