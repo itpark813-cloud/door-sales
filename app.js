@@ -24,9 +24,8 @@ const products = [
     { id: 3, name: "Дверь 'Milano Classic'", price: 1800000 }
 ];
 
-// Корзина и текущий пользователь
+// Корзина
 let cart = JSON.parse(localStorage.getItem('door_cart')) || [];
-let currentUser = null;
 
 // === 3. DOM-ЭЛЕМЕНТЫ ===
 const loginBtn = document.getElementById('loginBtn');
@@ -52,9 +51,8 @@ const ordersList = document.getElementById('ordersList');
 // Стартовый рендеринг
 updateCartUI();
 
-// === 4. КОРЗИНА И СИСТЕМА ПОКУПКИ ===
+// === 4. ЛОГИКА СИСТЕМЫ КОРЗИНЫ ===
 
-// Добавление в корзину
 document.querySelectorAll('.btn-add').forEach(button => {
     button.addEventListener('click', () => {
         const productId = parseInt(button.getAttribute('data-id'));
@@ -117,51 +115,51 @@ function updateCartUI() {
     });
 
     cartTotal.innerText = `Итого: ${total.toLocaleString()} сум`;
-    checkoutBtn.disabled = false; // Кнопка "Оформить заказ" теперь доступна
+    checkoutBtn.disabled = false;
 }
 
-// === 5. ЛОГИКА ОФОРМЛЕНИЯ ЗАКАЗА ===
+// === 5. ЛОГИКА ОФОРМЛЕНИЯ ЗАКАЗА (ИСПРАВЛЕНО!) ===
 checkoutBtn.addEventListener('click', () => {
-    if (!currentUser) {
+    // Берем активного юзера напрямую из Firebase Auth (без промежуточных переменных)
+    const activeUser = auth.currentUser;
+
+    if (!activeUser) {
         alert("Пожалуйста, войдите в аккаунт, чтобы совершить покупку!");
         authModal.classList.add('active');
         return;
     }
 
-    // Рассчитываем сумму
     let total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     
-    // Создаем объект заказа
     const newOrder = {
-        orderId: Math.floor(100000 + Math.random() * 900000), // Рандомный 6-значный ID заказа
+        orderId: Math.floor(100000 + Math.random() * 900000),
         date: new Date().toLocaleDateString('ru-RU'),
         items: cart.map(item => `${item.name} (x${item.qty})`).join(', '),
         total: total
     };
 
-    // Сохраняем в localStorage для конкретного юзера
-    let userOrders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`)) || [];
+    // Сохраняем в историю под UID текущего юзера
+    let userOrders = JSON.parse(localStorage.getItem(`orders_${activeUser.uid}`)) || [];
     userOrders.push(newOrder);
-    localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(userOrders));
+    localStorage.setItem(`orders_${activeUser.uid}`, JSON.stringify(userOrders));
 
     // Очищаем корзину
     cart = [];
     saveCart();
     updateCartUI();
 
-    // Обновляем список заказов в профиле
-    renderOrdersUI();
+    // Обновляем список заказов
+    renderOrdersUI(activeUser);
 
     alert(`🎉 Заказ №${newOrder.orderId} оформлен успешно! Двери отправлены на доставку.`);
 });
 
 
 // === 6. НАСТРОЙКА КЛИЕНТСКОГО КАБИНЕТА ===
+function renderOrdersUI(activeUser) {
+    if (!activeUser) return;
 
-function renderOrdersUI() {
-    if (!currentUser) return;
-
-    let userOrders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`)) || [];
+    let userOrders = JSON.parse(localStorage.getItem(`orders_${activeUser.uid}`)) || [];
 
     if (userOrders.length === 0) {
         ordersList.innerHTML = '<p class="empty-orders-text">Вы еще не совершили ни одной покупки.</p>';
@@ -184,8 +182,7 @@ function renderOrdersUI() {
 }
 
 
-// === 7. МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ ===
-
+// === 7. УПРАВЛЕНИЕ МОДАЛКОЙ ===
 loginBtn.addEventListener('click', () => authModal.classList.add('active'));
 closeModalBtn.addEventListener('click', closeModal);
 authModal.addEventListener('click', (e) => { if (e.target === authModal) closeModal(); });
@@ -197,7 +194,6 @@ function closeModal() {
 
 // === 8. FIREBASE AUTHENTICATION ===
 
-// Вход через Google
 googleLoginBtn.addEventListener('click', () => {
     signInWithPopup(auth, googleProvider)
         .then(() => {
@@ -209,7 +205,6 @@ googleLoginBtn.addEventListener('click', () => {
         });
 });
 
-// Регистрация / вход по почте
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('emailField').value;
@@ -238,8 +233,6 @@ loginForm.addEventListener('submit', (e) => {
 // Отслеживание входа/выхода
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // Юзер зашел
-        currentUser = user;
         loginBtn.style.display = 'none';
         
         const nameToShow = user.displayName || user.email.split('@')[0];
@@ -248,19 +241,16 @@ onAuthStateChanged(auth, (user) => {
         
         userProfile.style.display = 'flex';
 
-        // Обновляем кабинет
+        // Показываем кабинет
         profilePrompt.style.display = 'none';
         profileSection.style.display = 'block';
         userEmailText.innerText = user.email;
         
-        // Дата создания аккаунта в красивом формате
         const creationTime = user.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString('ru-RU') : 'Сегодня';
         userJoinedDate.innerText = creationTime;
 
-        renderOrdersUI();
+        renderOrdersUI(user);
     } else {
-        // Юзер вышел
-        currentUser = null;
         userProfile.style.display = 'none';
         loginBtn.style.display = 'flex';
 
@@ -270,7 +260,6 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Выход
 logoutBtn.addEventListener('click', () => {
     signOut(auth).then(() => {
         loginForm.reset();
