@@ -45,6 +45,20 @@
             <p data-i18n="heroSubtitle">Подберите идеальную дверь для вашего дома с бесплатной доставкой по Узбекистану</p>
         </div>
 
+        <!-- Интерактивная панель поиска и фильтров -->
+        <div class="search-filter-panel">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Поиск дверей..." data-i18n-placeholder="searchPlaceholder">
+            </div>
+            
+            <div class="price-filter-container">
+                <span data-i18n="priceFilter">Цена до:</span>
+                <input type="range" id="priceRange" min="1000000" max="6000000" step="100000" value="6000000">
+                <span id="priceRangeValue">6 000 000 сум</span>
+            </div>
+        </div>
+
         <!-- Фильтры категорий -->
         <div class="category-filters">
             <button class="filter-btn active" data-category="all" data-i18n="filterAll">Все</button>
@@ -130,7 +144,17 @@
         </div>
     </div>
 
+    <!-- Футер с отметкой создателя -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 DoorLux Inc. All rights reserved.</p>
+            <p class="creator-badge">
+                Developed by: <a href="https://ocyho.vercel.app" target="_blank">ocyho.vercel.app</a>
+            </p>
+        </div>
+    </footer>
+
     <!-- Подключение скрипта -->
     <script type="module" src="app.js"></script>
 </body>
-            </html>
+                    </html>
