@@ -1,8 +1,8 @@
 :root {
-    --bg: #0b0f19;
+    --bg: #070a13;
     --glass: rgba(255, 255, 255, 0.03);
     --glass-hover: rgba(255, 255, 255, 0.07);
-    --border: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.06);
     --primary: #6366f1;
     --primary-hover: #4f46e5;
     --text: #f3f4f6;
@@ -17,18 +17,20 @@
 }
 
 body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: var(--bg);
     color: var(--text);
-    padding-bottom: 60px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     overflow-x: hidden;
 }
 
 /* Шапка сайта */
 header {
-    background: rgba(11, 15, 25, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(7, 10, 19, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
     position: fixed;
     top: 0;
@@ -41,34 +43,54 @@ header {
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.6rem;
+    font-weight: 800;
     color: #fff;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     text-decoration: none;
+    letter-spacing: 0.5px;
 }
 
 .logo i {
     color: var(--primary);
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
 }
 
 .nav-actions {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
+}
+
+.btn-lang {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn-lang:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
 }
 
 .btn-auth {
     background: var(--primary);
     color: #fff;
     border: none;
-    padding: 8px 18px;
-    border-radius: 8px;
+    padding: 8px 20px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
-    transition: background 0.2s, transform 0.1s;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -76,22 +98,23 @@ header {
 
 .btn-auth:hover {
     background: var(--primary-hover);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
 }
 
-/* Профиль юзера */
+/* Профиль в навигации */
 .user-profile {
-    display: none; /* Управляется через JS */
+    display: none;
     align-items: center;
     gap: 10px;
     background: var(--glass);
-    padding: 6px 12px;
+    padding: 6px 14px;
     border-radius: 20px;
     border: 1px solid var(--border);
 }
 
 .user-avatar {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: var(--primary);
     display: flex;
@@ -99,7 +122,6 @@ header {
     justify-content: center;
     font-weight: bold;
     color: white;
-    font-size: 0.9rem;
 }
 
 .logout-btn {
@@ -107,7 +129,7 @@ header {
     border: none;
     color: #f87171;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-left: 5px;
     transition: color 0.2s;
 }
@@ -116,31 +138,122 @@ header {
     color: #ef4444;
 }
 
-/* Главный контейнер */
+/* Главный макет */
 .container {
     max-width: 1200px;
-    margin: 100px auto 0;
+    margin: 110px auto 40px;
     padding: 0 20px;
+    flex: 1;
 }
 
 .hero {
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
 }
 
 .hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 15px;
-    background: linear-gradient(45deg, #a5b4fc, #e0e7ff);
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #a5b4fc, #e0e7ff, #818cf8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .hero p {
     color: var(--text-muted);
+    font-size: 1.1rem;
 }
 
-/* Двухколоночная структура */
+/* Панель фильтров и поиска */
+.search-filter-panel {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.search-box input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    padding: 12px 15px 12px 42px;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+    border-color: var(--primary);
+}
+
+.price-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--text-muted);
+}
+
+.price-filter-container input[type="range"] {
+    accent-color: var(--primary);
+    cursor: pointer;
+    width: 150px;
+}
+
+#priceRangeValue {
+    color: #a5b4fc;
+    font-weight: bold;
+}
+
+/* Категории */
+.category-filters {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.filter-btn {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 10px 22px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.25s;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.45);
+}
+
+/* Две колонки */
 .main-layout {
     display: grid;
     grid-template-columns: 1.8fr 1.2fr;
@@ -154,10 +267,10 @@ header {
     }
 }
 
-/* Сетка товаров */
+/* Сетка каталога */
 .catalog-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 20px;
 }
 
@@ -166,57 +279,58 @@ header {
     border: 1px solid var(--border);
     border-radius: 16px;
     overflow: hidden;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     transition: transform 0.3s ease, border-color 0.3s ease;
     display: flex;
     flex-direction: column;
 }
 
 .glass-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-6px);
+    border-color: rgba(99, 102, 241, 0.4);
 }
 
 .door-img-container {
-    height: 280px;
-    background: #1e293b;
+    height: 320px;
+    background: linear-gradient(180deg, #101524, #0b0f19);
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
     overflow: hidden;
+    border-bottom: 1px solid var(--border);
 }
 
 .door-img-container img {
-    height: 90%;
-    object-fit: contain;
-    transition: transform 0.3s;
+    height: 100%;
+    width: 100%;
+    object-fit: cover; /* Крупный и сочный план */
+    transition: transform 0.5s ease;
 }
 
 .glass-card:hover .door-img-container img {
-    transform: scale(1.05);
+    transform: scale(1.06);
 }
 
 .door-details {
-    padding: 15px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
 }
 
 .door-details h3 {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     margin-bottom: 8px;
-    color: #fff;
+    color: white;
 }
 
 .door-details p {
     color: var(--text-muted);
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     margin-bottom: 15px;
-    flex-grow: 1;
     line-height: 1.4;
+    flex-grow: 1;
 }
 
 .price-row {
@@ -227,128 +341,126 @@ header {
 }
 
 .price {
-    font-size: 1.15rem;
-    font-weight: 700;
+    font-size: 1.2rem;
+    font-weight: 800;
     color: #a5b4fc;
 }
 
 .btn-add {
     background: transparent;
-    border: 1px solid var(--primary);
-    color: var(--text);
-    padding: 6px 12px;
-    border-radius: 8px;
+    border: 1.5px solid var(--primary);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
     transition: all 0.2s;
 }
 
 .btn-add:hover {
     background: var(--primary);
-    box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
 }
 
-/* Правая колонка модулей */
+/* Правые карточки */
 .right-column {
     display: flex;
     flex-direction: column;
     gap: 30px;
 }
 
-/* Стили кабинета и заглушки */
 .profile-section, .cart-section, .profile-prompt {
     background: var(--glass);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 25px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .profile-section {
-    display: none; /* Показывается только когда юзер вошел */
+    display: none;
 }
 
 .profile-prompt {
     text-align: center;
     color: var(--text-muted);
-    padding: 30px 20px;
+    padding: 35px 25px;
 }
 
 .profile-prompt i {
-    font-size: 2rem;
+    font-size: 2.2rem;
     color: var(--primary);
     margin-bottom: 12px;
 }
 
 .section-title, .cart-title {
-    font-size: 1.3rem;
-    margin-bottom: 15px;
+    font-size: 1.35rem;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    color: #fff;
+    gap: 12px;
+    color: white;
 }
 
 .profile-card {
-    background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.015);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px;
+    border-radius: 12px;
+    padding: 15px;
     margin-bottom: 20px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
 .profile-card p {
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+}
+
+.profile-card p:last-child {
+    margin-bottom: 0;
 }
 
 .profile-card i {
     color: var(--primary);
-    width: 20px;
+    margin-right: 8px;
 }
 
-/* Заказы */
+/* Стили заказов */
 .orders-title {
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-    color: #fff;
-}
-
-.empty-orders-text {
-    font-size: 0.85rem;
-    color: var(--text-muted);
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+    color: white;
 }
 
 .order-card {
-    background: rgba(16, 185, 129, 0.05);
-    border: 1px solid rgba(16, 185, 129, 0.2);
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 10px;
-    font-size: 0.85rem;
+    background: rgba(16, 185, 129, 0.04);
+    border: 1px solid rgba(16, 185, 129, 0.15);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
 }
 
 .order-header {
     display: flex;
     justify-content: space-between;
-    font-weight: bold;
+    font-weight: 700;
     margin-bottom: 8px;
     color: #a7f3d0;
 }
 
 .order-status {
     background: var(--success);
-    color: #fff;
-    font-size: 0.7rem;
-    padding: 2px 6px;
-    border-radius: 4px;
+    color: white;
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    border-radius: 5px;
+    text-transform: uppercase;
 }
 
 .order-items {
+    font-size: 0.85rem;
     color: var(--text-muted);
-    margin-bottom: 6px;
-    line-height: 1.3;
+    margin-bottom: 8px;
 }
 
 /* Корзина */
@@ -356,21 +468,20 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 12px 0;
     border-bottom: 1px solid var(--border);
-    font-size: 0.9rem;
 }
 
 .empty-cart-text {
     color: var(--text-muted);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
 .cart-total {
     text-align: right;
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-top: 15px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-top: 20px;
     color: #a5b4fc;
 }
 
@@ -379,10 +490,10 @@ header {
     background: var(--primary);
     color: white;
     border: none;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
     cursor: pointer;
     margin-top: 15px;
     transition: all 0.2s;
@@ -390,25 +501,25 @@ header {
 
 .btn-checkout:hover:not(:disabled) {
     background: var(--primary-hover);
-    box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
 }
 
 .btn-checkout:disabled {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--text-muted);
     cursor: not-allowed;
 }
 
-/* Модальное окно */
+/* Модалка авторизации */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(4, 6, 12, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -424,14 +535,14 @@ header {
 }
 
 .auth-modal {
-    background: rgba(15, 23, 42, 0.95);
+    background: rgba(10, 15, 28, 0.96);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 30px;
+    border-radius: 24px;
+    padding: 35px;
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
     transform: scale(0.9);
     transition: transform 0.3s ease;
 }
@@ -442,9 +553,9 @@ header {
 
 .close-modal {
     position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 1.5rem;
+    top: 18px;
+    right: 22px;
+    font-size: 1.6rem;
     cursor: pointer;
     color: var(--text-muted);
     transition: color 0.2s;
@@ -455,34 +566,35 @@ header {
 }
 
 .auth-modal h2 {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     text-align: center;
+    font-weight: 800;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 18px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 6px;
-    font-size: 0.85rem;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
     color: var(--text-muted);
 }
 
 .form-input {
     width: 100%;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.03);
     border: 1px solid var(--border);
-    padding: 10px;
-    border-radius: 8px;
+    padding: 12px;
+    border-radius: 10px;
     color: white;
     font-size: 0.95rem;
+    outline: none;
     transition: border-color 0.2s;
 }
 
 .form-input:focus {
-    outline: none;
     border-color: var(--primary);
 }
 
@@ -491,10 +603,10 @@ header {
     background: var(--primary);
     color: white;
     border: none;
-    padding: 11px;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
+    padding: 13px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
     cursor: pointer;
     margin-top: 10px;
     transition: background 0.2s;
@@ -506,7 +618,7 @@ header {
 
 .divider {
     text-align: center;
-    margin: 15px 0;
+    margin: 20px 0;
     color: var(--text-muted);
     font-size: 0.85rem;
     position: relative;
@@ -529,10 +641,10 @@ header {
     background: #fff;
     color: #000;
     border: none;
-    padding: 11px;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -544,3 +656,47 @@ header {
 .btn-google:hover {
     background: #f1f1f1;
 }
+
+/* Футер копирайта создателя */
+footer {
+    background: rgba(4, 6, 12, 0.95);
+    border-top: 1px solid var(--border);
+    padding: 30px 0;
+    margin-top: auto;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+@media (max-width: 600px) {
+    .footer-content {
+        flex-direction: column;
+    }
+}
+
+.creator-badge {
+    font-weight: 600;
+}
+
+.creator-badge a {
+    color: var(--primary);
+    text-decoration: none;
+    border-bottom: 1.5px solid transparent;
+    transition: all 0.2s;
+}
+
+.creator-badge a:hover {
+    color: #a5b4fc;
+    border-color: #a5b4fc;
+    }
