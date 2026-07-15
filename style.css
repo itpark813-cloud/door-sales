@@ -79,7 +79,7 @@ header {
 
 /* Профиль юзера */
 .user-profile {
-    display: none; /* по умолчанию скрыт */
+    display: none; /* по умолчанию скрыт, показывается через JS */
     align-items: center;
     gap: 10px;
     background: var(--glass);
@@ -98,6 +98,7 @@ header {
     justify-content: center;
     font-weight: bold;
     color: white;
+    font-size: 0.9rem;
 }
 
 .logout-btn {
@@ -270,7 +271,7 @@ header {
     color: #a5b4fc;
 }
 
-/* Модалка авторизации */
+/* Модальное окно авторизации */
 .modal-overlay {
     position: fixed;
     top: 0;
