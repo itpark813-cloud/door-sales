@@ -86,7 +86,7 @@ const translations = {
 
 let currentLang = "ru";
 
-// === 3. БАЗА ДАННЫХ ДВЕРЕЙ (РЕАЛЬНЫЕ ФОТО ВЫСОКОГО КАЧЕСТВА) ===
+// === 3. БАЗА ДАННЫХ ДВЕРЕЙ (ТОЧНЫЕ ССЫЛКИ НА ДВЕРИ КРУПНЫМ ПЛАНОМ) ===
 const products = [
     { 
         id: 1, 
@@ -96,7 +96,7 @@ const products = [
         descRu: "Премиальная межкомнатная дверь из благородного массива светлого ясеня с оригинальной фактурой дерева и итальянской фурнитурой.",
         descUz: "Sifatli va nafis oq kul daraxtidan yasalgan xonalararo eshik, italyan furniturasi bilan.",
         price: 1850000, 
-        image: "https://images.pexels.com/photos/1010079/pexels-photo-1010079.jpeg?auto=compress&cs=tinysrgb&w=600" 
+        image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=600&auto=format&fit=crop" // Светлая комнатная дверь с четкой деревянной фактурой
     },
     { 
         id: 2, 
@@ -106,17 +106,17 @@ const products = [
         descRu: "Входная сейфовая дверь из 3-мм каленой стали с матовой темной отделкой, взломостойкими замками и премиальной шумоизоляцией.",
         descUz: "3 mm qalinlikdagi po'latdan tayyorlangan kirish seyf eshigi. Shovqindan yuqori darajadagi himoya.",
         price: 4900000, 
-        image: "https://images.pexels.com/photos/276554/pexels-photo-276554.jpeg?auto=compress&cs=tinysrgb&w=600" 
+        image: "https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?q=80&w=600&auto=format&fit=crop" // Темная надежная входная металлическая дверь
     },
     { 
         id: 3, 
         category: "interior",
         nameRu: "Эмаль 'Milano Line'", 
         nameUz: "Emal 'Milano Line'",
-        descRu: "Современная белая межкомнатная дверь, покрытая гладкой многослойной эмалью с утонченными геомитрическими фрезеровками.",
+        descRu: "Современная белая межкомнатная дверь, покрытая гладкой многослойной эмалью с утонченными геометрическими фрезеровками.",
         descUz: "Ko'p qatlamli emal bilan qoplangan, matli shisha elementlariga ega zamonaviy xonalararo eshik.",
         price: 2300000, 
-        image: "https://images.pexels.com/photos/4846437/pexels-photo-4846437.jpeg?auto=compress&cs=tinysrgb&w=600" 
+        image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=600&auto=format&fit=crop" // Минималистичная белая комнатная дверь
     },
     { 
         id: 4, 
@@ -126,7 +126,7 @@ const products = [
         descRu: "Утепленная уличная дверь с терморазрывом, изящной ковкой ручной работы, матовым стеклом и текстурой темного дуба.",
         descUz: "Hovli uylari uchun namlikka chidamli ko'cha eshigi. Qo'lda ishlangan soxta temir va oyna.",
         price: 5800000, 
-        image: "https://images.pexels.com/photos/2079234/pexels-photo-2079234.jpeg?auto=compress&cs=tinysrgb&w=600" 
+        image: "https://images.unsplash.com/photo-1515263487990-61b07816b324?q=80&w=600&auto=format&fit=crop" // Роскошная уличная сине-голубая дверь коттеджа
     }
 ];
 
@@ -173,11 +173,13 @@ const nicknameInput = document.getElementById('nicknameInput');
 const saveProfileBtn = document.getElementById('saveProfileBtn');
 
 // === 5. СМЕНА ЯЗЫКОВ ===
-langBtn.addEventListener('click', () => {
-    currentLang = currentLang === "ru" ? "uz" : "ru";
-    langBtn.innerText = currentLang.toUpperCase();
-    applyLanguage();
-});
+if (langBtn) {
+    langBtn.addEventListener('click', () => {
+        currentLang = currentLang === "ru" ? "uz" : "ru";
+        langBtn.innerText = currentLang.toUpperCase();
+        applyLanguage();
+    });
+}
 
 function applyLanguage() {
     const t = translations[currentLang];
@@ -192,8 +194,10 @@ function applyLanguage() {
         if (t[key]) el.placeholder = t[key];
     });
 
-    const currentVal = parseInt(priceRange.value);
-    priceRangeValue.innerText = `${currentVal.toLocaleString()} ${t.currency}`;
+    if (priceRange && priceRangeValue) {
+        const currentVal = parseInt(priceRange.value);
+        priceRangeValue.innerText = `${currentVal.toLocaleString()} ${t.currency}`;
+    }
 
     renderCatalog();
     updateCartUI();
@@ -201,17 +205,23 @@ function applyLanguage() {
 }
 
 // === 6. ФИЛЬТРАЦИЯ И СОРТИРОВКА ===
-searchInput.addEventListener('input', (e) => {
-    searchQuery = e.target.value.toLowerCase().trim();
-    renderCatalog();
-});
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value.toLowerCase().trim();
+        renderCatalog();
+    });
+}
 
-priceRange.addEventListener('input', (e) => {
-    maxPrice = parseInt(e.target.value);
-    const t = translations[currentLang];
-    priceRangeValue.innerText = `${maxPrice.toLocaleString()} ${t.currency}`;
-    renderCatalog();
-});
+if (priceRange) {
+    priceRange.addEventListener('input', (e) => {
+        maxPrice = parseInt(e.target.value);
+        const t = translations[currentLang];
+        if (priceRangeValue) {
+            priceRangeValue.innerText = `${maxPrice.toLocaleString()} ${t.currency}`;
+        }
+        renderCatalog();
+    });
+}
 
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -223,6 +233,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 });
 
 function renderCatalog() {
+    if (!catalogGrid) return;
     catalogGrid.innerHTML = '';
     const t = translations[currentLang];
 
@@ -297,11 +308,12 @@ function saveCart() {
 }
 
 function updateCartUI() {
+    if (!cartList) return;
     const t = translations[currentLang];
     if (cart.length === 0) {
         cartList.innerHTML = `<p class="empty-cart-text">${t.emptyCart}</p>`;
-        cartTotal.innerText = `${t.total}: 0 ${t.currency}`;
-        checkoutBtn.disabled = true;
+        if (cartTotal) cartTotal.innerText = `${t.total}: 0 ${t.currency}`;
+        if (checkoutBtn) checkoutBtn.disabled = true;
         return;
     }
 
@@ -328,50 +340,53 @@ function updateCartUI() {
         });
     });
 
-    cartTotal.innerText = `${t.total}: ${total.toLocaleString()} ${t.currency}`;
-    checkoutBtn.disabled = false;
+    if (cartTotal) cartTotal.innerText = `${t.total}: ${total.toLocaleString()} ${t.currency}`;
+    if (checkoutBtn) checkoutBtn.disabled = false;
 }
 
 // === 8. КНОПКА ОФОРМЛЕНИЯ ЗАКАЗА ===
-checkoutBtn.addEventListener('click', () => {
-    const activeUser = auth.currentUser;
-    const t = translations[currentLang];
-    
-    if (!activeUser) {
-        alert(t.authAlert);
-    }
+if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', () => {
+        const activeUser = auth.currentUser;
+        const t = translations[currentLang];
+        
+        if (!activeUser) {
+            alert(t.authAlert);
+        }
 
-    let total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    
-    const newOrder = {
-        orderId: Math.floor(100000 + Math.random() * 900000),
-        date: new Date().toLocaleDateString('ru-RU'),
-        items: cart.map(item => {
-            const name = currentLang === 'ru' ? item.nameRu : item.nameUz;
-            return `${name} (x${item.qty})`;
-        }).join(', '),
-        total: total
-    };
+        let total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        
+        const newOrder = {
+            orderId: Math.floor(100000 + Math.random() * 900000),
+            date: new Date().toLocaleDateString('ru-RU'),
+            items: cart.map(item => {
+                const name = currentLang === 'ru' ? item.nameRu : item.nameUz;
+                return `${name} (x${item.qty})`;
+            }).join(', '),
+            total: total
+        };
 
-    const storageKey = activeUser ? `orders_${activeUser.uid}` : 'orders_guest';
-    let userOrders = JSON.parse(localStorage.getItem(storageKey)) || [];
-    userOrders.push(newOrder);
-    localStorage.setItem(storageKey, JSON.stringify(userOrders));
+        const storageKey = activeUser ? `orders_${activeUser.uid}` : 'orders_guest';
+        let userOrders = JSON.parse(localStorage.getItem(storageKey)) || [];
+        userOrders.push(newOrder);
+        localStorage.setItem(storageKey, JSON.stringify(userOrders));
 
-    cart = [];
-    saveCart();
-    updateCartUI();
-    
-    if (activeUser) {
-        renderOrdersUI(activeUser);
-    } else {
-        renderGuestOrdersUI();
-    }
+        cart = [];
+        saveCart();
+        updateCartUI();
+        
+        if (activeUser) {
+            renderOrdersUI(activeUser);
+        } else {
+            renderGuestOrdersUI();
+        }
 
-    alert(`🎉 ${t.orderNum}${newOrder.orderId} ${t.orderAlert}`);
-});
+        alert(`🎉 ${t.orderNum}${newOrder.orderId} ${t.orderAlert}`);
+    });
+}
 
 function renderOrdersUI(activeUser) {
+    if (!ordersList) return;
     const t = translations[currentLang];
     if (!activeUser) return;
 
@@ -398,6 +413,7 @@ function renderOrdersUI(activeUser) {
 }
 
 function renderGuestOrdersUI() {
+    if (!profilePrompt) return;
     const t = translations[currentLang];
     let guestOrders = JSON.parse(localStorage.getItem('orders_guest')) || [];
     if (guestOrders.length > 0) {
@@ -407,18 +423,20 @@ function renderGuestOrdersUI() {
             <div id="guestOrdersContainer" style="text-align: left;"></div>
         `;
         const container = document.getElementById('guestOrdersContainer');
-        guestOrders.forEach(order => {
-            container.innerHTML += `
-                <div class="order-card">
-                    <div class="order-header">
-                        <span>${t.orderNum}${order.orderId}</span>
-                        <span class="order-status">${t.orderPaid}</span>
+        if (container) {
+            guestOrders.forEach(order => {
+                container.innerHTML += `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span>${t.orderNum}${order.orderId}</span>
+                            <span class="order-status">${t.orderPaid}</span>
+                        </div>
+                        <div class="order-items">${order.items}</div>
+                        <div style="text-align: right; font-weight: bold;">${t.total}: ${order.total.toLocaleString()} ${t.currency}</div>
                     </div>
-                    <div class="order-items">${order.items}</div>
-                    <div style="text-align: right; font-weight: bold;">${t.total}: ${order.total.toLocaleString()} ${t.currency}</div>
-                </div>
-            `;
-        });
+                `;
+            });
+        }
     }
 }
 
@@ -428,128 +446,139 @@ function loadCustomProfile(uid) {
     const savedAvatar = localStorage.getItem(`profile_avatar_${uid}`);
 
     if (savedName) {
-        userName.innerText = savedName;
-        nicknameInput.value = savedName;
-        avatarName.innerText = savedName.charAt(0).toUpperCase();
-        cabinetAvatarFallback.innerText = savedName.charAt(0).toUpperCase();
+        if (userName) userName.innerText = savedName;
+        if (nicknameInput) nicknameInput.value = savedName;
+        if (avatarName) avatarName.innerText = savedName.charAt(0).toUpperCase();
+        if (cabinetAvatarFallback) cabinetAvatarFallback.innerText = savedName.charAt(0).toUpperCase();
     }
 
     if (savedAvatar) {
-        // Показываем картинку в шапке
-        headerAvatarImg.src = savedAvatar;
-        headerAvatarImg.classList.remove('hidden');
-        avatarName.classList.add('hidden');
+        if (headerAvatarImg) {
+            headerAvatarImg.src = savedAvatar;
+            headerAvatarImg.classList.remove('hidden');
+        }
+        if (avatarName) avatarName.classList.add('hidden');
 
-        // Показываем картинку в кабинете
-        cabinetAvatarImg.src = savedAvatar;
-        cabinetAvatarImg.classList.remove('hidden');
-        cabinetAvatarFallback.classList.add('hidden');
+        if (cabinetAvatarImg) {
+            cabinetAvatarImg.src = savedAvatar;
+            cabinetAvatarImg.classList.remove('hidden');
+        }
+        if (cabinetAvatarFallback) cabinetAvatarFallback.classList.add('hidden');
     } else {
-        headerAvatarImg.classList.add('hidden');
-        avatarName.classList.remove('hidden');
-        cabinetAvatarImg.classList.add('hidden');
-        cabinetAvatarFallback.classList.remove('hidden');
+        if (headerAvatarImg) headerAvatarImg.classList.add('hidden');
+        if (avatarName) avatarName.classList.remove('hidden');
+        if (cabinetAvatarImg) cabinetAvatarImg.classList.add('hidden');
+        if (cabinetAvatarFallback) cabinetAvatarFallback.classList.remove('hidden');
     }
 }
 
 // Обработка загрузки новой аватарки
-avatarInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file && auth.currentUser) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const base64String = reader.result;
-            // Сохраняем в localStorage для текущей сессии пользователя
-            localStorage.setItem(`profile_avatar_${auth.currentUser.uid}`, base64String);
-            loadCustomProfile(auth.currentUser.uid);
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-// Кнопка сохранения нового никнейма
-saveProfileBtn.addEventListener('click', () => {
-    const newName = nicknameInput.value.trim();
-    if (newName && auth.currentUser) {
-        localStorage.setItem(`profile_name_${auth.currentUser.uid}`, newName);
-        loadCustomProfile(auth.currentUser.uid);
-        alert(translations[currentLang].profileSaved);
-    }
-});
-
-// === 10. МОДАЛКА И FIREBASE АВТОРИЗАЦИЯ ===
-loginBtn.addEventListener('click', () => authModal.classList.add('active'));
-closeModalBtn.addEventListener('click', closeModal);
-authModal.addEventListener('click', (e) => { if (e.target === authModal) closeModal(); });
-
-function closeModal() {
-    authModal.classList.remove('active');
+if (avatarInput) {
+    avatarInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && auth.currentUser) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result;
+                localStorage.setItem(`profile_avatar_${auth.currentUser.uid}`, base64String);
+                loadCustomProfile(auth.currentUser.uid);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 }
 
-googleLoginBtn.addEventListener('click', () => {
-    signInWithPopup(auth, googleProvider)
-        .then(() => closeModal())
-        .catch(err => alert("Google Error: " + err.message));
-});
+// Кнопка сохранения нового никнейма
+if (saveProfileBtn) {
+    saveProfileBtn.addEventListener('click', () => {
+        const newName = nicknameInput ? nicknameInput.value.trim() : "";
+        if (newName && auth.currentUser) {
+            localStorage.setItem(`profile_name_${auth.currentUser.uid}`, newName);
+            loadCustomProfile(auth.currentUser.uid);
+            alert(translations[currentLang].profileSaved);
+        }
+    });
+}
 
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('emailField').value;
-    const password = document.getElementById('passwordField').value;
+// === 10. МОДАЛКА И FIREBASE АВТОРИЗАЦИЯ ===
+if (loginBtn) loginBtn.addEventListener('click', () => authModal && authModal.classList.add('active'));
+if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+if (authModal) {
+    authModal.addEventListener('click', (e) => { if (e.target === authModal) closeModal(); });
+}
 
-    signInWithEmailAndPassword(auth, email, password)
-        .then(() => closeModal())
-        .catch((error) => {
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                createUserWithEmailAndPassword(auth, email, password)
-                    .then(() => {
-                        closeModal();
-                        alert("Регистрация успешна!");
-                    })
-                    .catch((regError) => alert("Ошибка: " + regError.message));
-            } else {
-                alert("Ошибка: " + error.message);
-            }
-        });
-});
+function closeModal() {
+    if (authModal) authModal.classList.remove('active');
+}
+
+if (googleLoginBtn) {
+    googleLoginBtn.addEventListener('click', () => {
+        signInWithPopup(auth, googleProvider)
+            .then(() => closeModal())
+            .catch(err => alert("Google Error: " + err.message));
+    });
+}
+
+if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('emailField').value;
+        const password = document.getElementById('passwordField').value;
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then(() => closeModal())
+            .catch((error) => {
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                    createUserWithEmailAndPassword(auth, email, password)
+                        .then(() => {
+                            closeModal();
+                            alert("Регистрация успешна!");
+                        })
+                        .catch((regError) => alert("Ошибка: " + regError.message));
+                } else {
+                    alert("Ошибка: " + error.message);
+                }
+            });
+    });
+}
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        loginBtn.style.display = 'none';
+        if (loginBtn) loginBtn.style.display = 'none';
         
-        // Значения по дефолту до кастомизации
         const defaultName = user.displayName || user.email.split('@')[0];
-        userName.innerText = defaultName;
-        avatarName.innerText = defaultName.charAt(0).toUpperCase();
-        cabinetAvatarFallback.innerText = defaultName.charAt(0).toUpperCase();
-        nicknameInput.value = defaultName;
+        if (userName) userName.innerText = defaultName;
+        if (avatarName) avatarName.innerText = defaultName.charAt(0).toUpperCase();
+        if (cabinetAvatarFallback) cabinetAvatarFallback.innerText = defaultName.charAt(0).toUpperCase();
+        if (nicknameInput) nicknameInput.value = defaultName;
         
-        userProfile.style.display = 'flex';
-        profilePrompt.style.display = 'none';
-        profileSection.style.display = 'block';
-        userEmailText.innerText = user.email;
+        if (userProfile) userProfile.style.display = 'flex';
+        if (profilePrompt) profilePrompt.style.display = 'none';
+        if (profileSection) profileSection.style.display = 'block';
+        if (userEmailText) userEmailText.innerText = user.email;
         
         const creationTime = user.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString('ru-RU') : 'Сегодня';
-        userJoinedDate.innerText = creationTime;
+        if (userJoinedDate) userJoinedDate.innerText = creationTime;
 
-        // Загружаем сохраненный кастомный профиль (если есть)
         loadCustomProfile(user.uid);
         renderOrdersUI(user);
     } else {
-        userProfile.style.display = 'none';
-        loginBtn.style.display = 'flex';
-        profileSection.style.display = 'none';
-        profilePrompt.style.display = 'block';
+        if (userProfile) userProfile.style.display = 'none';
+        if (loginBtn) loginBtn.style.display = 'flex';
+        if (profileSection) profileSection.style.display = 'none';
+        if (profilePrompt) profilePrompt.style.display = 'block';
         renderGuestOrdersUI();
     }
 });
 
-logoutBtn.addEventListener('click', () => {
-    signOut(auth).then(() => {
-        loginForm.reset();
-        alert("Вы вышли из аккаунта.");
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        signOut(auth).then(() => {
+            if (loginForm) loginForm.reset();
+            alert("Вы вышли из аккаунта.");
+        });
     });
-});
+}
 
 // Стартовый запуск
 renderCatalog();
