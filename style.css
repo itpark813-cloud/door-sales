@@ -8,6 +8,7 @@
     --text: #f3f4f6;
     --text-muted: #9ca3af;
     --success: #10b981;
+    --creator-color: #38bdf8; /* Голубой неоновый цвет для ocyho */
 }
 
 * {
@@ -112,9 +113,23 @@ header {
     border: 1px solid var(--border);
 }
 
-.user-avatar {
+.avatar-container-mini {
+    position: relative;
     width: 32px;
     height: 32px;
+}
+
+.avatar-round {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--primary);
+}
+
+.user-avatar-fallback, .avatar-round-fallback {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     background: var(--primary);
     display: flex;
@@ -122,6 +137,10 @@ header {
     justify-content: center;
     font-weight: bold;
     color: white;
+}
+
+.hidden {
+    display: none !important;
 }
 
 .logout-btn {
@@ -304,7 +323,7 @@ header {
 .door-img-container img {
     height: 100%;
     width: 100%;
-    object-fit: cover; /* Крупный и сочный план */
+    object-fit: cover;
     transition: transform 0.5s ease;
 }
 
@@ -403,24 +422,100 @@ header {
     color: white;
 }
 
+/* Настройки профиля в Кабинете */
 .profile-card {
     background: rgba(255, 255, 255, 0.015);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 15px;
+    padding: 20px;
     margin-bottom: 20px;
+}
+
+.profile-edit-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.avatar-upload-wrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.avatar-upload-wrapper .avatar-round, 
+.avatar-upload-wrapper .avatar-round-fallback {
+    width: 100%;
+    height: 100%;
+    font-size: 2rem;
+}
+
+.upload-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background: var(--primary);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border: 2px solid var(--bg);
+    transition: background 0.2s;
+}
+
+.upload-badge:hover {
+    background: var(--primary-hover);
+}
+
+.nickname-edit-wrapper {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.nickname-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    padding: 10px;
+    border-radius: 8px;
+    color: white;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.nickname-input:focus {
+    border-color: var(--primary);
+}
+
+.btn-save-profile {
+    background: var(--primary);
+    border: none;
+    color: white;
+    width: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-save-profile:hover {
+    background: var(--primary-hover);
+}
+
+.profile-meta p {
+    margin-bottom: 8px;
     font-size: 0.95rem;
 }
 
-.profile-card p {
-    margin-bottom: 8px;
-}
-
-.profile-card p:last-child {
-    margin-bottom: 0;
-}
-
-.profile-card i {
+.profile-meta i {
     color: var(--primary);
     margin-right: 8px;
 }
@@ -689,14 +784,21 @@ footer {
     font-weight: 600;
 }
 
-.creator-badge a {
-    color: var(--primary);
+/* Стилизация ссылки на ocyho */
+.brand-link {
+    color: var(--creator-color) !important;
     text-decoration: none;
-    border-bottom: 1.5px solid transparent;
-    transition: all 0.2s;
+    font-weight: 800;
+    text-transform: lowercase;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+    padding: 2px 6px;
+    border-radius: 4px;
 }
 
-.creator-badge a:hover {
-    color: #a5b4fc;
-    border-color: #a5b4fc;
+.brand-link:hover {
+    color: #fff !important;
+    background: var(--creator-color);
+    box-shadow: 0 0 10px var(--creator-color);
+    border-bottom-color: transparent;
     }
