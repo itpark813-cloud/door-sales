@@ -86,47 +86,47 @@ const translations = {
 
 let currentLang = "ru";
 
-// === 3. БАЗА ДАННЫХ ДВЕРЕЙ ===
+// === 3. БАЗА ДАННЫХ ДВЕРЕЙ (РЕАЛЬНЫЕ ФОТО ВЫСОКОГО КАЧЕСТВА) ===
 const products = [
     { 
         id: 1, 
         category: "interior",
         nameRu: "Элитная 'Nordic Wood'", 
         nameUz: "Nafis 'Nordic Wood'",
-        descRu: "Премиальная межкомнатная дверь из благородного массива светлого ясеня с итальянской фурнитурой.",
+        descRu: "Премиальная межкомнатная дверь из благородного массива светлого ясеня с оригинальной фактурой дерева и итальянской фурнитурой.",
         descUz: "Sifatli va nafis oq kul daraxtidan yasalgan xonalararo eshik, italyan furniturasi bilan.",
         price: 1850000, 
-        image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80" 
+        image: "https://images.pexels.com/photos/1010079/pexels-photo-1010079.jpeg?auto=compress&cs=tinysrgb&w=600" 
     },
     { 
         id: 2, 
         category: "entrance",
         nameRu: "Бронированная 'Armor Max'", 
         nameUz: "Zirhli 'Armor Max'",
-        descRu: "Входная сейфовая дверь из 3-мм каленой стали. Шумоизоляция премиум-класса, взломостойкие замки.",
+        descRu: "Входная сейфовая дверь из 3-мм каленой стали с матовой темной отделкой, взломостойкими замками и премиальной шумоизоляцией.",
         descUz: "3 mm qalinlikdagi po'latdan tayyorlangan kirish seyf eshigi. Shovqindan yuqori darajadagi himoya.",
         price: 4900000, 
-        image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=600&q=80" 
+        image: "https://images.pexels.com/photos/276554/pexels-photo-276554.jpeg?auto=compress&cs=tinysrgb&w=600" 
     },
     { 
         id: 3, 
         category: "interior",
         nameRu: "Эмаль 'Milano Line'", 
         nameUz: "Emal 'Milano Line'",
-        descRu: "Современная межкомнатная дверь, покрытая многослойной эмалью с матовыми стеклянными вставками.",
+        descRu: "Современная белая межкомнатная дверь, покрытая гладкой многослойной эмалью с утонченными геомитрическими фрезеровками.",
         descUz: "Ko'p qatlamli emal bilan qoplangan, matli shisha elementlariga ega zamonaviy xonalararo eshik.",
         price: 2300000, 
-        image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80" 
+        image: "https://images.pexels.com/photos/4846437/pexels-photo-4846437.jpeg?auto=compress&cs=tinysrgb&w=600" 
     },
     { 
         id: 4, 
         category: "entrance",
         nameRu: "Коттеджная 'Tuscany Port'", 
         nameUz: "Kottej 'Tuscany Port'",
-        descRu: "Влагостойкая уличная дверь для загородных домов. Ковка ручной работы и закаленный стеклопакет.",
+        descRu: "Утепленная уличная дверь с терморазрывом, изящной ковкой ручной работы, матовым стеклом и текстурой темного дуба.",
         descUz: "Hovli uylari uchun namlikka chidamli ko'cha eshigi. Qo'lda ishlangan soxta temir va oyna.",
         price: 5800000, 
-        image: "https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?auto=format&fit=crop&w=600&q=80" 
+        image: "https://images.pexels.com/photos/2079234/pexels-photo-2079234.jpeg?auto=compress&cs=tinysrgb&w=600" 
     }
 ];
 
@@ -513,44 +513,4 @@ loginForm.addEventListener('submit', (e) => {
         });
 });
 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        loginBtn.style.display = 'none';
-        
-        // Значения по дефолту до кастомизации
-        const defaultName = user.displayName || user.email.split('@')[0];
-        userName.innerText = defaultName;
-        avatarName.innerText = defaultName.charAt(0).toUpperCase();
-        cabinetAvatarFallback.innerText = defaultName.charAt(0).toUpperCase();
-        nicknameInput.value = defaultName;
-        
-        userProfile.style.display = 'flex';
-        profilePrompt.style.display = 'none';
-        profileSection.style.display = 'block';
-        userEmailText.innerText = user.email;
-        
-        const creationTime = user.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString('ru-RU') : 'Сегодня';
-        userJoinedDate.innerText = creationTime;
-
-        // Загружаем сохраненный кастомный профиль (если есть)
-        loadCustomProfile(user.uid);
-        renderOrdersUI(user);
-    } else {
-        userProfile.style.display = 'none';
-        loginBtn.style.display = 'flex';
-        profileSection.style.display = 'none';
-        profilePrompt.style.display = 'block';
-        renderGuestOrdersUI();
-    }
-});
-
-logoutBtn.addEventListener('click', () => {
-    signOut(auth).then(() => {
-        loginForm.reset();
-        alert("Вы вышли из аккаунта.");
-    });
-});
-
-// Стартовый запуск
-renderCatalog();
-applyLanguage();
+onAuthStateChanged(auth, (user
