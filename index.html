@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoorLux | Магазин элитных дверей</title>
+    <!-- Иконки Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Подключение стилей -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Шапка сайта -->
+    <header>
+        <a href="#" class="logo">
+            <i class="fas fa-door-open"></i>
+            <span>DoorLux</span>
+        </a>
+        <div class="nav-actions">
+            <!-- Кнопка авторизации (по умолчанию видна) -->
+            <button class="btn-auth" id="loginBtn">
+                <i class="fas fa-user"></i> Войти
+            </button>
+            
+            <!-- Профиль юзера (по умолчанию скрыт) -->
+            <div class="user-profile" id="userProfile">
+                <div class="user-avatar" id="avatarName">O</div>
+                <span id="userName">Окихо</span>
+                <button class="logout-btn" id="logoutBtn" title="Выйти">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <div class="container">
+        
+        <div class="hero">
+            <h1>Входные и межкомнатные двери премиум качества</h1>
+            <p>Подберите идеальную дверь для вашего дома с бесплатной доставкой по Узбекистану</p>
+        </div>
+
+        <!-- Каталог -->
+        <div class="catalog-grid">
+            
+            <!-- Дверь 1 -->
+            <div class="glass-card" data-id="1">
+                <div class="door-img-container">
+                    <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=300&q=80" alt="Nordic Wood">
+                </div>
+                <div class="door-details">
+                    <h3>Nordic Wood</h3>
+                    <p>Межкомнатная дверь из натурального шпона ясеня. Минималистичный скандинавский стиль.</p>
+                    <div class="price-row">
+                        <span class="price">1 200 000 сум</span>
+                        <button class="btn-add" data-id="1">В корзину</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дверь 2 -->
+            <div class="glass-card" data-id="2">
+                <div class="door-img-container">
+                    <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=300&q=80" alt="Armor Max">
+                </div>
+                <div class="door-details">
+                    <h3>Armor Max</h3>
+                    <p>Бронированная входная дверь с итальянскими замками 4-го класса взломостойкости.</p>
+                    <div class="price-row">
+                        <span class="price">3 500 000 сум</span>
+                        <button class="btn-add" data-id="2">В корзину</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дверь 3 -->
+            <div class="glass-card" data-id="3">
+                <div class="door-img-container">
+                    <img src="https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?auto=format&fit=crop&w=300&q=80" alt="Milano Classic">
+                </div>
+                <div class="door-details">
+                    <h3>Milano Classic</h3>
+                    <p>Классическая межкомнатная дверь со вставками из матового закаленного стекла.</p>
+                    <div class="price-row">
+                        <span class="price">1 800 000 сум</span>
+                        <button class="btn-add" data-id="3">В корзину</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Корзина -->
+        <div class="cart-section">
+            <h2 class="cart-title"><i class="fas fa-shopping-cart" style="color: var(--primary)"></i> Ваша корзина</h2>
+            <div id="cartList">
+                <p class="empty-cart-text">Корзина пока пуста. Выберите товары в каталоге.</p>
+            </div>
+            <div class="cart-total" id="cartTotal">Итого: 0 сум</div>
+        </div>
+
+    </div>
+
+    <!-- Модальное окно авторизации -->
+    <div class="modal-overlay" id="authModal">
+        <div class="auth-modal">
+            <span class="close-modal" id="closeModalBtn">&times;</span>
+            <h2>Личный кабинет</h2>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="emailField">Электронная почта</label>
+                    <input type="email" class="form-input" placeholder="example@mail.com" required id="emailField">
+                </div>
+                <div class="form-group">
+                    <label for="passwordField">Пароль</label>
+                    <input type="password" class="form-input" placeholder="••••••••" required id="passwordField">
+                </div>
+                <button type="submit" class="btn-submit">Войти</button>
+            </form>
+
+            <div class="divider">или</div>
+
+            <!-- Кнопка входа через Google -->
+            <button class="btn-google" id="googleLoginBtn">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_認證圖標.svg" alt="Google" style="width: 20px;">
+                Войти через Google
+            </button>
+        </div>
+    </div>
+
+    <!-- Подключение скрипта -->
+    <script src="app.js"></script>
+</body>
+</html>
