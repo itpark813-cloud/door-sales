@@ -1,270 +1,702 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+:root {
+    --bg: #070a13;
+    --glass: rgba(255, 255, 255, 0.03);
+    --glass-hover: rgba(255, 255, 255, 0.07);
+    --border: rgba(255, 255, 255, 0.06);
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --text: #f3f4f6;
+    --text-muted: #9ca3af;
+    --success: #10b981;
+}
 
-// === 1. КОНФИГУРАЦИЯ ТВОЕГО ПРОЕКТА FIREBASE ===
-const firebaseConfig = {
-  apiKey: "AIzaSyAyqVtbWBA4ZJgt_QU7GVtPC8tPnYbEdF8",
-  authDomain: "door-sales.firebaseapp.com",
-  projectId: "door-sales",
-  storageBucket: "door-sales.firebasestorage.app",
-  messagingSenderId: "516237537218",
-  appId: "1:516237537218:web:71edf527248774e732705b",
-  measurementId: "G-0X6P3Z7R13"
-};
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-// Инициализируем Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
 
-// === 2. БАЗА ДАННЫХ ТОВАРОВ ===
-const products = [
-    { id: 1, name: "Дверь 'Nordic Wood'", price: 1200000 },
-    { id: 2, name: "Стальная 'Armor Max'", price: 3500000 },
-    { id: 3, name: "Дверь 'Milano Classic'", price: 1800000 }
-];
+/* Шапка сайта */
+header {
+    background: rgba(7, 10, 19, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-// Корзина
-let cart = JSON.parse(localStorage.getItem('door_cart')) || [];
+.logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
 
-// === 3. DOM-ЭЛЕМЕНТЫ ===
-const loginBtn = document.getElementById('loginBtn');
-const authModal = document.getElementById('authModal');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const loginForm = document.getElementById('loginForm');
-const googleLoginBtn = document.getElementById('googleLoginBtn');
-const userProfile = document.getElementById('userProfile');
-const userName = document.getElementById('userName');
-const avatarName = document.getElementById('avatarName');
-const logoutBtn = document.getElementById('logoutBtn');
+.logo i {
+    color: var(--primary);
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
+}
 
-const cartList = document.getElementById('cartList');
-const cartTotal = document.getElementById('cartTotal');
-const checkoutBtn = document.getElementById('checkoutBtn');
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
-const profileSection = document.getElementById('profileSection');
-const profilePrompt = document.getElementById('profilePrompt');
-const userEmailText = document.getElementById('userEmailText');
-const userJoinedDate = document.getElementById('userJoinedDate');
-const ordersList = document.getElementById('ordersList');
+.btn-lang {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
 
-// Стартовый рендеринг
-updateCartUI();
+.btn-lang:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+}
 
-// === 4. ЛОГИКА СИСТЕМЫ КОРЗИНЫ ===
+.btn-auth {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-document.querySelectorAll('.btn-add').forEach(button => {
-    button.addEventListener('click', () => {
-        const productId = parseInt(button.getAttribute('data-id'));
-        addToCart(productId);
-    });
-});
+.btn-auth:hover {
+    background: var(--primary-hover);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+}
 
-function addToCart(productId) {
-    const product = products.find(p => p.id === productId);
-    const exists = cart.find(item => item.id === productId);
+/* Профиль в навигации */
+.user-profile {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: var(--glass);
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+}
 
-    if (exists) {
-        exists.qty++;
-    } else {
-        cart.push({ ...product, qty: 1 });
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: #f87171;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: 5px;
+    transition: color 0.2s;
+}
+
+.logout-btn:hover {
+    color: #ef4444;
+}
+
+/* Главный макет */
+.container {
+    max-width: 1200px;
+    margin: 110px auto 40px;
+    padding: 0 20px;
+    flex: 1;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.hero h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #a5b4fc, #e0e7ff, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+/* Панель фильтров и поиска */
+.search-filter-panel {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.search-box input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    padding: 12px 15px 12px 42px;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+    border-color: var(--primary);
+}
+
+.price-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--text-muted);
+}
+
+.price-filter-container input[type="range"] {
+    accent-color: var(--primary);
+    cursor: pointer;
+    width: 150px;
+}
+
+#priceRangeValue {
+    color: #a5b4fc;
+    font-weight: bold;
+}
+
+/* Категории */
+.category-filters {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.filter-btn {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 10px 22px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.25s;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.45);
+}
+
+/* Две колонки */
+.main-layout {
+    display: grid;
+    grid-template-columns: 1.8fr 1.2fr;
+    gap: 30px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .main-layout {
+        grid-template-columns: 1fr;
     }
-    
-    saveCart();
-    updateCartUI();
 }
 
-function removeFromCart(productId) {
-    cart = cart.filter(item => item.id !== productId);
-    saveCart();
-    updateCartUI();
+/* Сетка каталога */
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
 }
 
-function saveCart() {
-    localStorage.setItem('door_cart', JSON.stringify(cart));
+.glass-card {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
-function updateCartUI() {
-    if (cart.length === 0) {
-        cartList.innerHTML = '<p class="empty-cart-text">Корзина пока пуста. Выберите товары в каталоге.</p>';
-        cartTotal.innerText = 'Итого: 0 сум';
-        checkoutBtn.disabled = true;
-        return;
+.glass-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.door-img-container {
+    height: 320px;
+    background: linear-gradient(180deg, #101524, #0b0f19);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+}
+
+.door-img-container img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover; /* Крупный и сочный план */
+    transition: transform 0.5s ease;
+}
+
+.glass-card:hover .door-img-container img {
+    transform: scale(1.06);
+}
+
+.door-details {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.door-details h3 {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.door-details p {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    margin-bottom: 15px;
+    line-height: 1.4;
+    flex-grow: 1;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.price {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #a5b4fc;
+}
+
+.btn-add {
+    background: transparent;
+    border: 1.5px solid var(--primary);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.btn-add:hover {
+    background: var(--primary);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+}
+
+/* Правые карточки */
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.profile-section, .cart-section, .profile-prompt {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 25px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.profile-section {
+    display: none;
+}
+
+.profile-prompt {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 35px 25px;
+}
+
+.profile-prompt i {
+    font-size: 2.2rem;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.section-title, .cart-title {
+    font-size: 1.35rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+}
+
+.profile-card {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.profile-card p {
+    margin-bottom: 8px;
+}
+
+.profile-card p:last-child {
+    margin-bottom: 0;
+}
+
+.profile-card i {
+    color: var(--primary);
+    margin-right: 8px;
+}
+
+/* Стили заказов */
+.orders-title {
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+    color: white;
+}
+
+.order-card {
+    background: rgba(16, 185, 129, 0.04);
+    border: 1px solid rgba(16, 185, 129, 0.15);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #a7f3d0;
+}
+
+.order-status {
+    background: var(--success);
+    color: white;
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+
+.order-items {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+/* Корзина */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.empty-cart-text {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.cart-total {
+    text-align: right;
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-top: 20px;
+    color: #a5b4fc;
+}
+
+.btn-checkout {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.2s;
+}
+
+.btn-checkout:hover:not(:disabled) {
+    background: var(--primary-hover);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+}
+
+.btn-checkout:disabled {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+/* Модалка авторизации */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(4, 6, 12, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.auth-modal {
+    background: rgba(10, 15, 28, 0.96);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 35px;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .auth-modal {
+    transform: scale(1);
+}
+
+.close-modal {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: white;
+}
+
+.auth-modal h2 {
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 800;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+.form-input {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 10px;
+    color: white;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    border-color: var(--primary);
+}
+
+.btn-submit {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 13px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.btn-submit:hover {
+    background: var(--primary-hover);
+}
+
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    position: relative;
+}
+
+.divider::before, .divider::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 35%;
+    height: 1px;
+    background: var(--border);
+}
+
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+
+.btn-google {
+    width: 100%;
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.2s;
+}
+
+.btn-google:hover {
+    background: #f1f1f1;
+}
+
+/* Футер копирайта создателя */
+footer {
+    background: rgba(4, 6, 12, 0.95);
+    border-top: 1px solid var(--border);
+    padding: 30px 0;
+    margin-top: auto;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+@media (max-width: 600px) {
+    .footer-content {
+        flex-direction: column;
     }
-
-    cartList.innerHTML = '';
-    let total = 0;
-
-    cart.forEach(item => {
-        total += item.price * item.qty;
-        cartList.innerHTML += `
-            <div class="cart-item">
-                <span><b>${item.name}</b> <small style="color: var(--text-muted)">(x${item.qty})</small></span>
-                <span>${(item.price * item.qty).toLocaleString()} сум
-                    <i class="fas fa-trash-alt" style="color: #f87171; cursor: pointer; margin-left: 15px;" data-remove-id="${item.id}"></i>
-                </span>
-            </div>
-        `;
-    });
-
-    cartList.querySelectorAll('[data-remove-id]').forEach(trashIcon => {
-        trashIcon.addEventListener('click', () => {
-            const idToRemove = parseInt(trashIcon.getAttribute('data-remove-id'));
-            removeFromCart(idToRemove);
-        });
-    });
-
-    cartTotal.innerText = `Итого: ${total.toLocaleString()} сум`;
-    checkoutBtn.disabled = false;
 }
 
-// === 5. ЛОГИКА ОФОРМЛЕНИЯ ЗАКАЗА (ИСПРАВЛЕНО!) ===
-checkoutBtn.addEventListener('click', () => {
-    // Берем активного юзера напрямую из Firebase Auth (без промежуточных переменных)
-    const activeUser = auth.currentUser;
-
-    if (!activeUser) {
-        alert("Пожалуйста, войдите в аккаунт, чтобы совершить покупку!");
-        authModal.classList.add('active');
-        return;
-    }
-
-    let total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    
-    const newOrder = {
-        orderId: Math.floor(100000 + Math.random() * 900000),
-        date: new Date().toLocaleDateString('ru-RU'),
-        items: cart.map(item => `${item.name} (x${item.qty})`).join(', '),
-        total: total
-    };
-
-    // Сохраняем в историю под UID текущего юзера
-    let userOrders = JSON.parse(localStorage.getItem(`orders_${activeUser.uid}`)) || [];
-    userOrders.push(newOrder);
-    localStorage.setItem(`orders_${activeUser.uid}`, JSON.stringify(userOrders));
-
-    // Очищаем корзину
-    cart = [];
-    saveCart();
-    updateCartUI();
-
-    // Обновляем список заказов
-    renderOrdersUI(activeUser);
-
-    alert(`🎉 Заказ №${newOrder.orderId} оформлен успешно! Двери отправлены на доставку.`);
-});
-
-
-// === 6. НАСТРОЙКА КЛИЕНТСКОГО КАБИНЕТА ===
-function renderOrdersUI(activeUser) {
-    if (!activeUser) return;
-
-    let userOrders = JSON.parse(localStorage.getItem(`orders_${activeUser.uid}`)) || [];
-
-    if (userOrders.length === 0) {
-        ordersList.innerHTML = '<p class="empty-orders-text">Вы еще не совершили ни одной покупки.</p>';
-        return;
-    }
-
-    ordersList.innerHTML = '';
-    userOrders.forEach(order => {
-        ordersList.innerHTML += `
-            <div class="order-card">
-                <div class="order-header">
-                    <span>Заказ №${order.orderId}</span>
-                    <span class="order-status">Оплачен</span>
-                </div>
-                <div class="order-items">${order.items}</div>
-                <div style="text-align: right; font-weight: bold;">Сумма: ${order.total.toLocaleString()} сум</div>
-            </div>
-        `;
-    });
+.creator-badge {
+    font-weight: 600;
 }
 
-
-// === 7. УПРАВЛЕНИЕ МОДАЛКОЙ ===
-loginBtn.addEventListener('click', () => authModal.classList.add('active'));
-closeModalBtn.addEventListener('click', closeModal);
-authModal.addEventListener('click', (e) => { if (e.target === authModal) closeModal(); });
-
-function closeModal() {
-    authModal.classList.remove('active');
+.creator-badge a {
+    color: var(--primary);
+    text-decoration: none;
+    border-bottom: 1.5px solid transparent;
+    transition: all 0.2s;
 }
 
-
-// === 8. FIREBASE AUTHENTICATION ===
-
-googleLoginBtn.addEventListener('click', () => {
-    signInWithPopup(auth, googleProvider)
-        .then(() => {
-            closeModal();
-        })
-        .catch((error) => {
-            console.error(error);
-            alert("Ошибка входа через Google: " + error.message);
-        });
-});
-
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('emailField').value;
-    const password = document.getElementById('passwordField').value;
-
-    signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-            closeModal();
-        })
-        .catch((error) => {
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                createUserWithEmailAndPassword(auth, email, password)
-                    .then(() => {
-                        closeModal();
-                        alert("Регистрация успешна!");
-                    })
-                    .catch((regError) => {
-                        alert("Ошибка регистрации: " + regError.message);
-                    });
-            } else {
-                alert("Ошибка входа: " + error.message);
-            }
-        });
-});
-
-// Отслеживание входа/выхода
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        loginBtn.style.display = 'none';
-        
-        const nameToShow = user.displayName || user.email.split('@')[0];
-        userName.innerText = nameToShow;
-        avatarName.innerText = nameToShow.charAt(0).toUpperCase();
-        
-        userProfile.style.display = 'flex';
-
-        // Показываем кабинет
-        profilePrompt.style.display = 'none';
-        profileSection.style.display = 'block';
-        userEmailText.innerText = user.email;
-        
-        const creationTime = user.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString('ru-RU') : 'Сегодня';
-        userJoinedDate.innerText = creationTime;
-
-        renderOrdersUI(user);
-    } else {
-        userProfile.style.display = 'none';
-        loginBtn.style.display = 'flex';
-
-        // Скрываем кабинет
-        profileSection.style.display = 'none';
-        profilePrompt.style.display = 'block';
-    }
-});
-
-logoutBtn.addEventListener('click', () => {
-    signOut(auth).then(() => {
-        loginForm.reset();
-        alert("Вы вышли из аккаунта.");
-    }).catch((error) => {
-        alert("Ошибка выхода: " + error.message);
-    });
-});
+.creator-badge a:hover {
+    color: #a5b4fc;
+    border-color: #a5b4fc;
+}
