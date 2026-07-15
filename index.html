@@ -4,21 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DoorLux | Магазин элитных дверей</title>
+    <!-- Иконки Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Подключение стилей -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- Шапка сайта -->
     <header>
         <a href="#" class="logo">
             <i class="fas fa-door-open"></i>
             <span>DoorLux</span>
         </a>
         <div class="nav-actions">
+            <!-- Переключатель языка -->
+            <button class="btn-lang" id="langBtn" data-lang="ru">RU</button>
+
+            <!-- Кнопка авторизации -->
             <button class="btn-auth" id="loginBtn">
-                <i class="fas fa-user"></i> Войти
+                <i class="fas fa-user"></i> <span data-i18n="login">Войти</span>
             </button>
             
+            <!-- Профиль юзера (по умолчанию скрыт) -->
             <div class="user-profile" id="userProfile">
                 <div class="user-avatar" id="avatarName">U</div>
                 <span id="userName">Пользователь</span>
@@ -29,88 +37,63 @@
         </div>
     </header>
 
+    <!-- Основной контент -->
     <div class="container">
         
         <div class="hero">
-            <h1>Входные и межкомнатные двери премиум качества</h1>
-            <p>Подберите идеальную дверь для вашего дома с бесплатной доставкой по Узбекистану</p>
+            <h1 data-i18n="heroTitle">Входные и межкомнатные двери премиум качества</h1>
+            <p data-i18n="heroSubtitle">Подберите идеальную дверь для вашего дома с бесплатной доставкой по Узбекистану</p>
         </div>
 
+        <!-- Фильтры категорий -->
+        <div class="category-filters">
+            <button class="filter-btn active" data-category="all" data-i18n="filterAll">Все</button>
+            <button class="filter-btn" data-category="entrance" data-i18n="filterEntrance">Входные</button>
+            <button class="filter-btn" data-category="interior" data-i18n="filterInterior">Межкомнатные</button>
+        </div>
+
+        <!-- Двухколоночная сетка -->
         <div class="main-layout">
             
+            <!-- Левая колонка: Каталог товаров -->
             <div class="left-column">
-                <div class="catalog-grid">
-                    <div class="glass-card" data-id="1">
-                        <div class="door-img-container">
-                            <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=300&q=80" alt="Nordic Wood">
-                        </div>
-                        <div class="door-details">
-                            <h3>Nordic Wood</h3>
-                            <p>Межкомнатная дверь из натурального шпона ясеня. Минималистичный скандинавский стиль.</p>
-                            <div class="price-row">
-                                <span class="price">1 200 000 сум</span>
-                                <button class="btn-add" data-id="1">В корзину</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-card" data-id="2">
-                        <div class="door-img-container">
-                            <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=300&q=80" alt="Armor Max">
-                        </div>
-                        <div class="door-details">
-                            <h3>Armor Max</h3>
-                            <p>Бронированная входная дверь с итальянскими замками 4-го класса взломостойкости.</p>
-                            <div class="price-row">
-                                <span class="price">3 500 000 сум</span>
-                                <button class="btn-add" data-id="2">В корзину</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-card" data-id="3">
-                        <div class="door-img-container">
-                            <img src="https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?auto=format&fit=crop&w=300&q=80" alt="Milano Classic">
-                        </div>
-                        <div class="door-details">
-                            <h3>Milano Classic</h3>
-                            <p>Классическая межкомнатная дверь со вставками из матового закаленного стекла.</p>
-                            <div class="price-row">
-                                <span class="price">1 800 000 сум</span>
-                                <button class="btn-add" data-id="3">В корзину</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="catalog-grid" id="catalogGrid">
+                    <!-- Карточки генерируются динамически через JS -->
                 </div>
             </div>
 
+            <!-- Правая колонка: Кабинет, Корзина, Заказы -->
             <div class="right-column">
                 
+                <!-- Блок профиля -->
                 <div class="profile-section" id="profileSection">
-                    <h2 class="section-title"><i class="fas fa-id-card"></i> Мой Кабинет</h2>
+                    <h2 class="section-title"><i class="fas fa-id-card"></i> <span data-i18n="cabinet">Мой Кабинет</span></h2>
                     <div class="profile-card">
                         <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <span id="userEmailText">example@mail.com</span></p>
-                        <p><i class="fas fa-calendar-alt"></i> <strong>В системе с:</strong> <span id="userJoinedDate">15.07.2026</span></p>
+                        <p><i class="fas fa-calendar-alt"></i> <strong data-i18n="joined">В системе с:</strong> <span id="userJoinedDate">15.07.2026</span></p>
                     </div>
 
-                    <h3 class="orders-title"><i class="fas fa-receipt"></i> История заказов</h3>
+                    <!-- Блок истории покупок -->
+                    <h3 class="orders-title"><i class="fas fa-receipt"></i> <span data-i18n="history">История заказов</span></h3>
                     <div id="ordersList">
-                        <p class="empty-orders-text">Вы еще не совершили ни одной покупки.</p>
+                        <p class="empty-orders-text" data-i18n="noOrders">Вы еще не совершили ни одной покупки.</p>
                     </div>
                 </div>
 
+                <!-- Подсказка-заглушка вместо профиля -->
                 <div class="profile-prompt" id="profilePrompt">
                     <i class="fas fa-user-lock"></i>
-                    <p>Войдите в аккаунт, чтобы сохранять заказы и просматривать историю покупок</p>
+                    <p data-i18n="loginPrompt">Войдите в аккаунт, чтобы сохранять заказы и просматривать историю покупок</p>
                 </div>
 
+                <!-- Корзина -->
                 <div class="cart-section">
-                    <h2 class="cart-title"><i class="fas fa-shopping-cart" style="color: var(--primary)"></i> Ваша корзина</h2>
+                    <h2 class="cart-title"><i class="fas fa-shopping-cart" style="color: var(--primary)"></i> <span data-i18n="cartTitle">Ваша корзина</span></h2>
                     <div id="cartList">
-                        <p class="empty-cart-text">Корзина пока пуста. Выберите товары в каталоге.</p>
+                        <p class="empty-cart-text" data-i18n="emptyCart">Корзина пока пуста. Выберите товары в каталоге.</p>
                     </div>
-                    <div class="cart-total" id="cartTotal">Итого: 0 сум</div>
-                    <button class="btn-checkout" id="checkoutBtn" disabled>Оформить заказ</button>
+                    <div class="cart-total" id="cartTotal" data-total-text="Итого: ">Итого: 0 сум</div>
+                    <button class="btn-checkout" id="checkoutBtn" disabled data-i18n="checkout">Оформить заказ</button>
                 </div>
 
             </div>
@@ -119,32 +102,35 @@
 
     </div>
 
+    <!-- Модальное окно авторизации -->
     <div class="modal-overlay" id="authModal">
         <div class="auth-modal">
             <span class="close-modal" id="closeModalBtn">&times;</span>
-            <h2>Личный кабинет</h2>
+            <h2 data-i18n="modalTitle">Личный кабинет</h2>
             
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="emailField">Электронная почта</label>
+                    <label for="emailField" data-i18n="emailLabel">Электронная почта</label>
                     <input type="email" class="form-input" placeholder="example@mail.com" required id="emailField">
                 </div>
                 <div class="form-group">
-                    <label for="passwordField">Пароль</label>
+                    <label for="passwordField" data-i18n="passLabel">Пароль</label>
                     <input type="password" class="form-input" placeholder="••••••••" required id="passwordField">
                 </div>
-                <button type="submit" class="btn-submit">Войти / Зарегистрироваться</button>
+                <button type="submit" class="btn-submit" data-i18n="loginSubmit">Войти / Зарегистрироваться</button>
             </form>
 
-            <div class="divider">или</div>
+            <div class="divider" data-i18n="or">или</div>
 
+            <!-- Кнопка входа через Google -->
             <button class="btn-google" id="googleLoginBtn">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_認證圖標.svg" alt="Google" style="width: 20px;">
-                Войти через Google
+                <span data-i18n="googleLogin">Войти через Google</span>
             </button>
         </div>
     </div>
 
+    <!-- Подключение скрипта -->
     <script type="module" src="app.js"></script>
 </body>
-</html>
+            </html>
