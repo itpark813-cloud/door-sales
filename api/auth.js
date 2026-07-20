@@ -1,7 +1,8 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+const redis = Redis.fromEnv();
 const SECRET = process.env.JWT_SECRET || 'doorlux_secret_key_change_me';
 
 export default async function handler(req, res) {
@@ -19,7 +20,8 @@ export default async function handler(req, res) {
   }
 
   const userKey = `user:${email.toLowerCase()}`;
-  const existingUser = await kv.get(userKey);
+  const rawUser = await redis.get(userKey);
+  const existingUser = rawUser ? (typeof rawUser === 'string' ? JSON.parse(rawUser) : rawUser) : null;
 
   if (existingUser) {
     const match = await bcrypt.compare(password, existingUser.password);
@@ -41,7 +43,7 @@ export default async function handler(req, res) {
     joined: new Date().toLocaleDateString('ru-RU')
   };
 
-  await kv.set(userKey, newUser);
+  await redis.set(userKey, JSON.stringify(newUser));
 
   const token = jwt.sign({ email: newUser.email }, SECRET, { expiresIn: '7d' });
   return res.status(201).json({
